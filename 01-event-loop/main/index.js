@@ -1,33 +1,19 @@
-const cluster = require('cluster');
+const express = require('express');
+const app = express();
+const crypto = require('crypto');
 
-//Estou sendo executado a primeira vez em Master Mode?
-if(cluster.isMaster) {
-  //Cria um child mode e seta o isMaster para false 
-  //e chama o index.js novamente.
-  cluster.fork();
-  cluster.fork();
-  cluster.fork();
-  cluster.fork();
-} else {
-  //cluster.isMaster é igual a false
-  //Eu sou um child e vou agir como um server
-  const express = require('express');
-  const app = express();
-  
-  app.get('/fast', (req, res) => {
-    res.send('Super fast');
-  });
-  
-  app.get('/', (req, res) => {
-    doWork(5000);
+app.get('/fast', (req, res) => {
+  res.send('Super fast');
+});
+
+app.get('/', (req, res) => {
+  crypto.pbkdf2('a', 'b', 100000, 512, 'sha512', () => {
     res.send('Hi there');
   });
+});
 
-  function doWork(duration) {
-    const start = Date.now();
-    while(Date.now() - start < duration) {}
-  }
-  
-  app.listen(3000);
-}
+app.listen(3000, function () {
+  console.log('Listening in 3000')
+});
+
 
