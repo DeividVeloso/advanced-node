@@ -26,3 +26,10 @@ test("We can lauch a browser and see if logo shows up", async () => {
 
   expect(text).toEqual("Blogster");
 });
+
+test('clicking login starts oauth flow', async () => {
+  await page.click('.right a');
+
+  const url = await page.url();
+  console.log("URL", url)
+})
